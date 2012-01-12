@@ -15,7 +15,7 @@ namespace LPSolver
 		{
 			get { return lpsolve32.get_Norig_rows(_id); }
 		}
-		public LPSolver32(int numberVariables, bool maximize)
+		internal LPSolver32(int numberVariables, bool maximize)
 		{
 			_id = lpsolve32.make_lp(0, numberVariables);
 			if (maximize) lpsolve32.set_maxim(_id);
