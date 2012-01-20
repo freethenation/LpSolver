@@ -23,15 +23,35 @@ namespace LPSolver
 		}
 		public void AddConstraint(ConstraintTypes constraintType, double rhs, params double[] coefficients)
 		{
-			lpsolve32.add_constraint(_id, coefficients, constraintType, rhs);
+			double[] coeff = new double[coefficients.Length + 1];
+			coefficients.CopyTo(coeff, 1);
+			if (!lpsolve32.add_constraint(_id, coeff, constraintType, rhs)) throw new Exception();
 		}
 		public void SetVariableBounds(int variableIndex, double lower, double upper)
 		{
-			lpsolve32.set_bounds(_id, variableIndex + 1, lower, upper);
+			if (!lpsolve32.set_bounds(_id, variableIndex + 1, lower, upper)) throw new Exception();
 		}
-		public void SetObjective(params double[] row)
+		string _outputFile = null;
+		public string OutputFile
 		{
-			lpsolve32.set_obj_fn(_id, row);
+			get
+			{
+				return _outputFile;
+			}
+			set
+			{
+				if (_outputFile != value)
+				{
+					lpsolve32.set_outputfile(_id, value);
+					_outputFile = value;
+				}
+			}
+		}
+		public void SetObjective(params double[] coefficients)
+		{
+			double[] coeff = new double[coefficients.Length + 1];
+			coefficients.CopyTo(coeff, 1);
+			if (!lpsolve32.set_obj_fn(_id, coeff)) throw new Exception();
 		}
 		public double[] GetSolutionsVariablesValues()
 		{
